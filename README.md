@@ -4,10 +4,10 @@
 # Logic flow
 1. keep reading access logfile from apache output (defualt is ./access.log) 
 2. everytime when script execute will set a static timestamp (current time) as reference
-3. base on the static current time from (2) check below condition: 
-    3.1. any ip request `/login` `20` times in past `10 minutes` (current time -> last 600s) `ban` these ip for `2 hour`
-    3.2. any ip request `/*` `100` times in past `10 minutes` (current time -> last 600s) `ban` these ip for `1 hour`
-    3.3. any ip request `/*` `40` times in past `1 minutes` (current time -> last 60s) `ban` these ip for `10 minutes`
+3. base on the static current time from (2) check below condition:   
+    3.1. any ip request `/login` `20` times in past `10 minutes` (current time -> last 600s) `ban` these ip for `2 hour`  
+    3.2. any ip request `/*` `100` times in past `10 minutes` (current time -> last 600s) `ban` these ip for `1 hour`  
+    3.3. any ip request `/*` `40` times in past `1 minutes` (current time -> last 60s) `ban` these ip for `10 minutes`  
 4. Will Run All condition from (3), if ip hit more than one condition should get banned with the longest ban time
 5. output ip ban record and target unban record at the same time into csv files (action_record.csv)
 6. if ip should already record need to be ban, but this ip keep hitting the condition, the unban time will be extend until no hit is found
@@ -24,13 +24,13 @@
 7. using the temp store log, grep ip and endpoint according to condition and save the ip , counts and ban time
 8. if ip already exist in current process as it hit previos rules, check if the ban time is longer or shorter, if longer then update it as the longer one
 9. after completed 3 conditions,clean up the temp log files as process completed
-10. base on the new hit record found in current process
-    10.1. Check if that ip already exist in CSV or not
-    10.2. if no, add ban entry (current time) and target unban entry (current time + ban time) to CSV file
-    10.3. if yes, check below condition
-          10.3.1. if the current target unban time is longer than the record in CSV, update that record in CSV (remove old record and new record)
-          10.3.2. if the current target unban time is less than the record in CSV , just skip it.
-          10.3.3. if the current ban time is large then the unban record in CSV, which mean the ip should already unban and hit the rules again, so need to create new ban and target unban history to CSV like (10.2.)
+10. base on the new hit record found in current process  
+    10.1. Check if that ip already exist in CSV or not  
+    10.2. if no, add ban entry (current time) and target unban entry (current time + ban time) to CSV file  
+    10.3. if yes, check below condition  
+          10.3.1. if the current target unban time is longer than the record in CSV, update that record in CSV (remove old record and new record)  
+          10.3.2. if the current target unban time is less than the record in CSV , just skip it.  
+          10.3.3. if the current ban time is large then the unban record in CSV, which mean the ip should already unban and hit the rules again, so need to create new ban and target unban history to CSV like (10.2.)  
 
 
 # Prerequisite
