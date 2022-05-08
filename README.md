@@ -341,7 +341,7 @@ The different is about -9 to 24 sec, while `BAN` is more accurate the different 
 
 To reduce the different, only solution is keep each cycle finsih asap, if I can complete it in every sec, it should be very accurate, but seems not possible for my current solution.
 
-I have already reduce the time from more than 60 sec -> 47~50 sec -> 28~31 sec, I will be glad if I can find some way to make it quicker.
+I have already reduce the time from more than 60 sec -> 47-50 sec -> 28-31 sec, I will be glad if I can find some way to make it quicker.
 
 
 
