@@ -348,7 +348,7 @@ From the console, I checked the time spend:
 15 sec for grepping log for last 10 mins in access.log, 5 sec for processing condition
 2. For rule 2: any ip request `/*` `100` times in past `10 minutes` (current time -> last 600s) `ban` these ip for `1 hour`  
 As will reuse temp log from (1) so grep log is 0 sec , and 5 sec for processing condition
-3.  For rule 3: any ip request `/*` `40` times in past `1 minutes` (current time -> last 60s) `ban` these ip for `10 minutes` 
+3.  For rule 3: any ip request `/*` `40` times in past `1 minutes` (current time -> last 60s) `ban` these ip for `10 minutes`  
 2 sec for grepping log , 3 sec for processing condition 
 
 So the bottle neck seems is on grepping log for last 10 mins , it need to take 15 sec
