@@ -14,7 +14,7 @@
 7. csv record will accumulated
 8. This script should need to keep running.
 
-# Technic design for the script
+# Technical design for the script
 1. define a static variable for current time
 2. need a time as reference otherwise difficult to tell what is the time period for (last 1/10 minutes)
 3. as appache log are outputing n lines of log for second (not mini second)
