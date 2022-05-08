@@ -302,28 +302,45 @@ do
     cronjob_period=$__runtime
     current_timestamp=$((current_timestamp + cronjob_period))
 done
+#make sure it run once more when the time is greater than target end time
+./main.sh "access.log"  "$current_timestamp"
 ```
 
-Here have 2 decision one is assume single thread another is assume multi thread
-
-Single thread:
-which is the current approach of `overall_test.sh`, start from `31-Dec-2018 23:55:00`, let say the first time need 30 second to complete, new execute time will be `31-Dec-2018 23:55:00` + 30 second = `31-Dec-2018 23:55:30`, until reach to the current time large than `01-Jan-2019 08:47:38` and Total will takes arround 9 hours to run completed
-
-Multi thread:
-For multi thread , as from the `output_sample_answer.sh` test we can see if we need to achieve the answer, we need to run it on every secord, to ensure the answer is extact same, so only multi thread can do it as the current process need take arround 30 second. But because of my current resource, I cannot do it in this way.
+The current approach of `overall_test.sh`, start from `31-Dec-2018 23:55:00`, let say the first time need 30 second to complete, new execute time will be `31-Dec-2018 23:55:00` + 30 second = `31-Dec-2018 23:55:30`, until reach to the current time large than `01-Jan-2019 08:47:38` and Total will takes arround 9 hours to run completed
 
 so the overall test will be `very very very very very` time consuming.
 
-As the ban time is related to the script start time and each script start time is reply on last finish time , so the result is slighty different with requirement
+As the ban time is related to the script start time and each script start time is reply on last finish time (currently the processing time is between 28 sec to 33 sec), so the result is slighty different with requirement
 
 
 result:
 action_record.csv:
 ```csv
-
+1546271816,BAN,58.236.203.13
+1546277424,BAN,221.17.254.20
+1546281135,UNBAN,221.17.254.20
+1546285800,BAN,210.133.208.189
+1546293587,UNBAN,210.133.208.189
+1546297463,BAN,221.17.254.20
+1546301063,UNBAN,221.17.254.20
+1546310864,UNBAN,58.236.203.13
 ```
 
+sample answer vs my answer for 9 hours testing:
+[BAN]   1546271816 - 1546271816 = 0 sec 
+[BAN]   1546277422 - 1546277424 = -2 sec
+[UNBAN] 1546281160 - 1546281135 = 24 sec
+[BAN]   1546285801 - 1546285800 = 1 sec
+[UNBAN] 1546293587 - 1546293587 = 0 sec
+[BAN]   1546297454 - 1546297463 = -9 sec
+[UNBAN] 1546301070 - 1546301063 = 7 sec 
+[UNBAN] 1546310858 - 1546310864 = -6 sec
 
+The different is about -9 to 24 sec, while `BAN` is more accurate the different is only -9 to 1 sec.
+
+To reduce the different, only solution is keep each cycle finsih asap, if I can complete it in every sec, it should be very accurate, but seems not possible for my current solution.
+
+I have already reduce the time from more than 60 sec -> 47~50 sec -> 28~31 sec, I will be glad if I can find some way to make it quicker.
 
 
 
