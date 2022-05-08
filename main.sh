@@ -2,7 +2,7 @@
 
 LANG=en_us_8859_1 
 
-function set_ban() {
+function check-if-need-ban() {
     
     last_seconds=$1
     restrict_threshold=$2
@@ -24,7 +24,6 @@ function set_ban() {
             else
                 search_timestring="$search_timestring\|$temp_timestring"
             fi
-            #grep "$temp_timestring" "$file" >> $tempfile_name
         done
         grep "$search_timestring" "$file" >> $tempfile_name
 
@@ -73,7 +72,6 @@ function set_ban() {
         fi
     done
     echo "[completed]" 
-    #echo "[Process completed]"
     temp_end=`date +%s`
     temp_runtime=$((temp_end-temp_start))
     echo "[Process completed in $temp_runtime]"
@@ -98,16 +96,17 @@ data_bantime=()
 
 
 #execute rule1
-set_ban 600 20 7200 "/login"
+check-if-need-ban 600 20 7200 "/login"
 #execute rule2
-set_ban 600 100 3600
+check-if-need-ban 600 100 3600
 #execute rule3
-set_ban 60 40 600
+check-if-need-ban 60 40 600
 
 #clean up file 
 rm -f ./temp-$current_timestamp*.log
 
 touch "$output_file"
+#Base on the entries from above checking, output to CSV file
 echo "[Start output BAN and UNBAN result]"
 for ((i = 0; i < ${#data_ip[@]}; ++i)); do
     recordip=${data_ip[$i]}
@@ -128,7 +127,6 @@ for ((i = 0; i < ${#data_ip[@]}; ++i)); do
                 echo "[DEBUG] As ip: $recordip already target to ban and the current unban time is longer than orgin target unban time so update entry in csv."
                 #remove old unban lines
                 sed -i "/$exist_last_unban_entry/d" "$output_file"
-                #sed ":a;N;$!ba;s/$exist_last_unban_entry\n/,/g" "$output_file"
                 #add new unban lines
                 echo "[DEBUG][UPDATE Entry] $unblocktime[$unblocktimetimestring],UNBAN,$recordip"
                 echo "$unblocktime,UNBAN,$recordip" >> "$output_file"
@@ -147,6 +145,4 @@ end=`date +%s`
 runtime=$((end-start))
 echo "All Process completed in $runtime second"
 
-# TO DO #
-# notice another task to read the csv file and excute the ban and unban
 
