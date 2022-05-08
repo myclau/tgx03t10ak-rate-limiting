@@ -28,8 +28,9 @@ function check-if-need-ban() {
         grep "$search_timestring" "$file" >> $tempfile_name
 
     fi
-    
-    echo "[completed]" 
+    temp_end=`date +%s`
+    temp_runtime=$((temp_end-temp_start))
+    echo "[completed in $temp_runtime seconds]" 
     #ip exist in target log
     ip_list=($(cat "$tempfile_name" | cut -d ' ' -f 1 | sort -n | uniq -c | awk '{print $(NF)}'))
 

@@ -310,7 +310,7 @@ The current approach of `overall_test.sh`, start from `31-Dec-2018 23:55:00`, le
 
 so the overall test will be `very very very very very` time consuming.
 
-As the ban time is related to the script start time and each script start time is reply on last finish time (currently the processing time is between 28 sec to 33 sec), so the result is slighty different with requirement
+As the ban time is related to the script start time and each script start time is rely on last finish time (currently the processing time is between 28 sec to 33 sec), so the result is slighty different from the requirement
 
 
 result:
@@ -343,7 +343,19 @@ To reduce the different, only solution is keep each cycle finsih asap, if I can 
 
 I have already reduce the time from more than 60 sec -> 47-50 sec -> 28-31 sec, I will be glad if I can find some way to make it quicker.
 
+From the console, I checked the time spend:
+1. For rule 1 : any ip request `/login` `20` times in past `10 minutes` (current time -> last 600s) `ban` these ip for `2 hour`  
+15 sec for grepping log for last 10 mins in access.log, 5 sec for processing condition
+2. For rule 2: any ip request `/*` `100` times in past `10 minutes` (current time -> last 600s) `ban` these ip for `1 hour`  
+As will reuse temp log from (1) so grep log is 0 sec , and 5 sec for processing condition
+3.  For rule 3: any ip request `/*` `40` times in past `1 minutes` (current time -> last 60s) `ban` these ip for `10 minutes` 
+2 sec for grepping log , 3 sec for processing condition 
+
+So the bottle neck seems is on grepping log for last 10 mins , it need to take 15 sec
 
 
 
+
+
+ 
 
