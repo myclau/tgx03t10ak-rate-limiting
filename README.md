@@ -512,7 +512,6 @@ sample answer vs my answer for 9 hours testing:
 [UNBAN] 1546301070 - 1546301059 = 11 sec 
 [UNBAN] 1546310858 - 1546310858 = 0 sec
 ```
-The different is about -9 to 24 sec, while `BAN` is more accurate the different is only -9 to 1 sec.
 
 To reduce the different, only solution is keep each cycle finsih asap, if I can complete it in every sec, it should be very accurate, but seems not possible for my current solution.
 
