@@ -15,7 +15,9 @@ function check-if-need-ban() {
     
     # grep log for last x second , and skip if already greped before
     if [ ! -f "$tempfile_name" ]; then
-        touch $tempfile_name
+        ######## using grep ########
+
+        #touch $tempfile_name
         ## it takes 15 sec to finish
         #search_timestring=""
         #for ((i = $last_seconds; i >= 0; i--)); do
@@ -27,12 +29,46 @@ function check-if-need-ban() {
         #    fi
         #done
         #grep "$search_timestring" "$file" >> $tempfile_name
+        #############################
 
-        ## it takes less then 1 sec to finish
-        temp_current_timestring=$(date -d @$((current_timestamp)) +"%d/%b/%Y:%H:%M:%S")
-        temp_start_timestring=$(date -d @$((current_timestamp - last_seconds)) +"%d/%b/%Y:%H:%M:%S")
-        sed -n "/${temp_start_timestring//\//\\/}/,/${temp_current_timestring//\//\\/}/ p" "$file" > $tempfile_name
-    
+        ######## using sed ############
+        temp_current_timestamp=$current_timestamp
+        temp_current_timestring=$(date -d @$temp_current_timestamp +"%d/%b/%Y:%H:%M:%S")
+        temp_start_timestamp=$((current_timestamp - last_seconds))
+        temp_start_timestring=$(date -d @$temp_start_timestamp +"%d/%b/%Y:%H:%M:%S")
+        #echo "temp_start: ${temp_start_timestring//\//\\/} temp_current: ${temp_current_timestring//\//\\/}"
+        
+        temp_start_timestring_exist=$(grep "$temp_start_timestring" "$file" | wc -l) 
+        while (( $temp_start_timestring_exist == 0 ))
+        do
+            if (( $first_line_timestamp > $temp_start_timestamp )); then
+                temp_start_timestring=$first_line_timestring
+                break
+            fi
+            temp_start_timestamp=$((temp_start_timestamp + 1))
+            temp_start_timestring=$(date -d @$((temp_start_timestamp)) +"%d/%b/%Y:%H:%M:%S")
+            temp_start_timestring_exist=$(grep "$temp_start_timestring" "$file" | wc -l)
+        done
+        temp_current_timestring_exist=$(grep "$temp_current_timestring" "$file" | wc -l) 
+        while (( $temp_current_timestring_exist == 0 ))
+        do
+            if (( $first_line_timestamp > $temp_current_timestamp )); then
+                temp_current_timestring=$first_line_timestring
+                break
+            fi
+            temp_current_timestamp=$((temp_current_timestamp - 1))
+            temp_current_timestring=$(date -d @$((temp_start_timestamp)) +"%d/%b/%Y:%H:%M:%S")
+            temp_current_timestring_exist=$(grep "$temp_current_timestring" "$file" | wc -l)
+        done
+
+        if [ "$temp_start_timestring" == "$temp_current_timestring" ]; then
+            sed -n "/${temp_start_timestring//\//\\/}/ p" "$file" > "$tempfile_name"
+        else
+            sed -n "/${temp_start_timestring//\//\\/}/,/${temp_current_timestring//\//\\/}/ p" "$file" > "$tempfile_name"
+        fi
+        echo "Temp file created: $tempfile_name"
+
+        #####################################
     fi
     temp_end=`date +%s`
     temp_runtime=$((temp_end-temp_start))
@@ -100,6 +136,11 @@ current_timestring=${2-"$real_current_timestring"}
 current_timestamp=$(date -d  "$current_timestring" +"%s")
 data_ip=()
 data_bantime=()
+first_line_timestring=$(sed -n 1,1p "$file" | cut -d ' ' -f 4 )
+first_line_timestring=$(echo "$first_line_timestring" | sed 's/\[//g' )
+first_line_timestring_date=$(echo "$first_line_timestring" | sed 's/\//-/g' )
+first_line_timestring_date=$(echo "$first_line_timestring_date" | sed 's/:/ /' )
+first_line_timestamp=$(date -d  "$first_line_timestring_date" +"%s")
 
 
 #execute rule1

@@ -20,4 +20,4 @@ do
     current_timestamp=$((current_timestamp + cronjob_period))
 done
 #make sure it run once more when the time is greater than target end time
-./main.sh "access.log"  "$current_timestamp"
+./main.sh "access.log"  "$current_timestring"

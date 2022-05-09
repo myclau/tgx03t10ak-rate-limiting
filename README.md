@@ -354,8 +354,34 @@ As will reuse temp log from (1) so grep log is 0 sec , and 5 sec for processing 
 So the bottle neck seems is on grepping log for last 10 mins , it need to take 15 sec
 
 
+# Latest update
+p.s. may be have bug
+use sed to grep the lines in between 2 line will much faster than using previous grep log method, it will takes only 13~15 sec for overall process which almost cut half.
 
 
+result:
+action_record.csv:
+```csv
+1546271822,BAN,58.236.203.13
+1546277424,BAN,221.17.254.20
+1546281135,UNBAN,221.17.254.20
+1546285806,BAN,210.133.208.189
+1546293581,UNBAN,210.133.208.189
+1546297459,BAN,221.17.254.20
+1546301059,UNBAN,221.17.254.20
+1546310858,UNBAN,58.236.203.13
+```
+sample answer vs my answer for another 9 hours testing:
+```
+[BAN]   1546271816 - 1546271822 = -6 sec 
+[BAN]   1546277422 - 1546277424 = -2 sec
+[UNBAN] 1546281160 - 1546281135 = 25 sec
+[BAN]   1546285801 - 1546285806 = -5 sec
+[UNBAN] 1546293587 - 1546293581 = 6 sec
+[BAN]   1546297454 - 1546297459 = -5 sec
+[UNBAN] 1546301070 - 1546301059 = 11 sec 
+[UNBAN] 1546310858 - 1546310858 = 0 sec
+```
 
  
 
