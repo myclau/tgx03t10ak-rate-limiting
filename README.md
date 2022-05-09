@@ -518,17 +518,6 @@ To reduce the different, only solution is keep each cycle finsih asap, if I can 
 
 I have already reduce the time from more than 60 sec -> 47-50 sec -> 28-31 sec -> 13-15 sec, I will be glad if I can find some way to make it quicker.
 
-This is reference as the last bottle-neck is on grepping method
-~From the console, I checked the time spend:~
-~1. For rule 1 : any ip request `/login` `20` times in past `10 minutes` (current time -> last 600s) `ban` these ip for `2 hour`  ~
-~15 sec for grepping log for last 10 mins in access.log, 5 sec for processing condition~
-~2. For rule 2: any ip request `/*` `100` times in past `10 minutes` (current time -> last 600s) `ban` these ip for `1 hour`  ~
-~As will reuse temp log from (1) so grep log is 0 sec , and 5 sec for processing condition~
-~3.  For rule 3: any ip request `/*` `40` times in past `1 minutes` (current time -> last 60s) `ban` these ip for `10 minutes`  ~
-~2 sec for grepping log , 3 sec for processing condition ~
-
-~So the bottle neck seems is on grepping log for last 10 mins , it need to take 15 sec~
-
 Although the running speed almost increase 50% but need to make sure grep lines between using sed the start and end pattern is exist in the file.
 So need more complex line for do checking before calling sed.
 
