@@ -16,23 +16,17 @@ function check-if-need-ban() {
     # grep log for last x second , and skip if already greped before
     if [ ! -f "$tempfile_name" ]; then
         touch $tempfile_name
-        ## it takes 15 sec to finish
-        #search_timestring=""
-        #for ((i = $last_seconds; i >= 0; i--)); do
-    	#    temp_timestring=$(date -d @$((current_timestamp - i)) +"%d/%b/%Y:%H:%M:%S")
-        #    if [ "$search_timestring" == "" ]; then
-        #        search_timestring="$temp_timestring"
-        #    else
-        #        search_timestring="$search_timestring\|$temp_timestring"
-        #    fi
-        #done
-        #grep "$search_timestring" "$file" >> $tempfile_name
+        search_timestring=""
+        for ((i = $last_seconds; i >= 0; i--)); do
+    	    temp_timestring=$(date -d @$((current_timestamp - i)) +"%d/%b/%Y:%H:%M:%S")
+            if [ "$search_timestring" == "" ]; then
+                search_timestring="$temp_timestring"
+            else
+                search_timestring="$search_timestring\|$temp_timestring"
+            fi
+        done
+        grep "$search_timestring" "$file" >> $tempfile_name
 
-        ## it takes less then 1 sec to finish
-        temp_current_timestring=$(date -d @$((current_timestamp)) +"%d/%b/%Y:%H:%M:%S")
-        temp_start_timestring=$(date -d @$((current_timestamp - last_seconds)) +"%d/%b/%Y:%H:%M:%S")
-        sed -n "/${temp_start_timestring//\//\\/}/,/${temp_current_timestring//\//\\/}/ p" "$file" > $tempfile_name
-    
     fi
     temp_end=`date +%s`
     temp_runtime=$((temp_end-temp_start))
