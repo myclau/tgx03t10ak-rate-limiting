@@ -79,6 +79,8 @@
 
 
 ## Unit test
+
+### simple run
 Assume the current time as `01-Jan-2019 00:05:19`, then execute it
 
 run command
@@ -92,35 +94,39 @@ Console log:
 $ ./main.sh "access.log" "01-Jan-2019 00:05:19"
 [Process Start] checking last 600 second's log, if ip request 20 time for endpoint [/login] then block for 7200 second
 [Grepping log for last 600]
-[completed]
+current_timestamp: 1546272319 ,first_line_timestamp: 1546271700, last_seconds_first_timestamp: 1546271719, last_line_timestamp: 1546303658
+[completed in 0 seconds]
 [Processing condition]
 [completed]
-[Process completed in 19]
+[Process completed in 5]
 [Process Start] checking last 600 second's log, if ip request 100 time for endpoint [/*] then block for 3600 second
 [Grepping log for last 600]
-[completed]
+[completed in 0 seconds]
 [Processing condition]
 [completed]
-[Process completed in 5]
+[Process completed in 4]
 [Process Start] checking last 60 second's log, if ip request 40 time for endpoint [/*] then block for 600 second
 [Grepping log for last 60]
-[completed]
+current_timestamp: 1546272319 ,first_line_timestamp: 1546271700, last_seconds_first_timestamp: 1546272259, last_line_timestamp: 1546303658  
+[completed in 0 seconds]
 [Processing condition]
 [completed]
-[Process completed in 5]
+[Process completed in 3]
 [Start output BAN and UNBAN result]
 [DEBUG][ADD Entry] 1546272319[01-Jan-2019 00:05:19],BAN,58.236.203.13
-[DEBUG][ADD Entry] 1546275919[01-Jan-2019 01:05:19],UNBAN,58.236.203.13
+[DEBUG][ADD Entry] 1546279519[01-Jan-2019 02:05:19],UNBAN,58.236.203.13
 [Completed]
-All Process completed in 29 second
+All Process completed in 14 second
 ```
 
 action_record.csv:
 ```csv
 1546272319,BAN,58.236.203.13
-1546275919,UNBAN,58.236.203.13
+1546279519,UNBAN,58.236.203.13
 
 ```
+
+### Check if unban record can be update
 
 Then assume the script run again in next minutes:
 
@@ -136,75 +142,245 @@ Console log:
 $ ./main.sh "access.log" "01-Jan-2019 00:06:19"
 [Process Start] checking last 600 second's log, if ip request 20 time for endpoint [/login] then block for 7200 second
 [Grepping log for last 600]
-[completed]
+[DEBUG] current_timestamp: 1546272379 ,first_line_timestamp: 1546271700, last_seconds_first_timestamp: 1546271779, last_line_timestamp: 1546303658  
+[completed in 1 seconds]
 [Processing condition]
 [completed]
-[Process completed in 19]
+[Process completed in 5]
 [Process Start] checking last 600 second's log, if ip request 100 time for endpoint [/*] then block for 3600 second
 [Grepping log for last 600]
-[completed]
+[completed in 0 seconds]
 [Processing condition]
 [completed]
 [Process completed in 5]
 [Process Start] checking last 60 second's log, if ip request 40 time for endpoint [/*] then block for 600 second
 [Grepping log for last 60]
-[completed]
+[DEBUG] current_timestamp: 1546272379 ,first_line_timestamp: 1546271700, last_seconds_first_timestamp: 1546272319, last_line_timestamp: 1546303658  
+[completed in 0 seconds]
 [Processing condition]
 [completed]
-[Process completed in 5]
+[Process completed in 4]
 [Start output BAN and UNBAN result]
 [DEBUG] As ip: 58.236.203.13 already target to ban and the current unban time is longer than orgin target unban time so update entry in csv.
-[DEBUG][UPDATE Entry] 1546275979[01-Jan-2019 01:06:19],UNBAN,58.236.203.13
+[DEBUG][UPDATE Entry] 1546279579[01-Jan-2019 02:06:19],UNBAN,58.236.203.13
 [Completed]
-All Process completed in 31 second
+All Process completed in 14 second
 ```
 action_record.csv:
 ```csv
 1546272319,BAN,58.236.203.13
-1546275979,UNBAN,58.236.203.13
+1546279579,UNBAN,58.236.203.13
 
 ```
 
-Set the time to `01-Jan-2019 01:07:19` and execute again. Here we set the time is one hour later (simulate nothing need to ban in this one hour) as 58.236.203.13 will hit the condition again and current time is greater than the last 58.236.203.13's unban time , so which means we need to ban it again.
+### Check if new ban record can be add if last unban record is expire
+
+Set the time to `01-Jan-2019 02:07:19` and execute again. Here we set the time is two hour later (simulate nothing need to ban in this two hour) as 58.236.203.13 will hit the condition again and current time is greater than the last 58.236.203.13's unban time , so which means we need to ban it again.
 
 run command
 ```bash
-./main.sh "access.log" "01-Jan-2019 01:07:19"
+./main.sh "access.log" "01-Jan-2019 02:07:19"
 ```
 
 Console log:
 ```bash
-$ ./main.sh "access.log" "01-Jan-2019 01:07:19"
-[Process Start] checking last 600 second's log, if ip request 20 time for endpoint [/login] then block for 7200 second[Grepping log for last 600]
-[completed]
+$  ./main.sh "access.log" "01-Jan-2019 02:07:19"
+[Process Start] checking last 600 second's log, if ip request 20 time for endpoint [/login] then block for 7200 second
+[Grepping log for last 600]
+[DEBUG] current_timestamp: 1546279639 ,first_line_timestamp: 1546271700, last_seconds_first_timestamp: 1546279039, last_line_timestamp: 1546303658  
+[completed in 0 seconds]
 [Processing condition]
 [completed]
-[Process completed in 21]
+[Process completed in 5]
 [Process Start] checking last 600 second's log, if ip request 100 time for endpoint [/*] then block for 3600 second
 [Grepping log for last 600]
+[completed in 0 seconds]
+[Processing condition]
 [completed]
+[Process completed in 5]
+[Process Start] checking last 60 second's log, if ip request 40 time for endpoint [/*] then block for 600 second
+[Grepping log for last 60]
+[DEBUG] current_timestamp: 1546279639 ,first_line_timestamp: 1546271700, last_seconds_first_timestamp: 1546279579, last_line_timestamp: 1546303658  
+[completed in 0 seconds]
+[Processing condition]
+[completed]
+[Process completed in 3]
+[Start output BAN and UNBAN result]
+[DEBUG][ADD Entry] 1546279639[01-Jan-2019 02:07:19],BAN,58.236.203.13
+[DEBUG][ADD Entry] 1546286839[01-Jan-2019 04:07:19],UNBAN,58.236.203.13
+[Completed]
+All Process completed in 13 second
+```
+action_record.csv:
+```csv
+1546272319,BAN,58.236.203.13
+1546279579,UNBAN,58.236.203.13
+1546279639,BAN,58.236.203.13
+1546286839,UNBAN,58.236.203.13
+
+```
+### Check what if log file is empty
+
+run command
+```bash
+./main.sh "empty.log" "01-Jan-2019 02:07:19"
+```
+
+result
+```bash
+$  ./main.sh "empty.log" "01-Jan-2019 02:07:19"
+No Suitable Content found
+```
+
+### Check if the time is set too early from the log file
+
+
+run command
+```bash
+./main.sh "access.log" "01-Jan-2016 02:07:19"
+```
+
+result
+```bash
+$  ./main.sh "access.log" "01-Jan-2016 02:07:19"
+[Process Start] checking last 600 second's log, if ip request 20 time for endpoint [/login] then block for 7200 second
+[Grepping log for last 600]
+[DEBUG] current_timestamp: 1451585239 ,first_line_timestamp: 1546271700, last_seconds_first_timestamp: 1451584639, last_line_timestamp: 1546303658  
+[Warning] Log is not suitable for checking
+[completed in 0 seconds]
+[Processing condition]
+[completed]
+[Process completed in 0]
+[Process Start] checking last 600 second's log, if ip request 100 time for endpoint [/*] then block for 3600 second
+[Grepping log for last 600]
+[completed in 0 seconds]
+[Processing condition]
+[completed]
+[Process completed in 0]
+[Process Start] checking last 60 second's log, if ip request 40 time for endpoint [/*] then block for 600 second
+[Grepping log for last 60]
+[DEBUG] current_timestamp: 1451585239 ,first_line_timestamp: 1546271700, last_seconds_first_timestamp: 1451585179, last_line_timestamp: 1546303658  
+[Warning] Log is not suitable for checking
+[completed in 0 seconds]
+[Processing condition]
+[completed]
+[Process completed in 0]
+[Start output BAN and UNBAN result]
+[Completed]
+All Process completed in 1 second
+```
+
+Script will warning you that Log is not suitable for checking
+
+### Check if the time is set too far away from the log file
+
+run command
+```bash
+./main.sh "access.log" "01-Jan-2020 02:07:19"
+```
+
+result
+```bash
+$  ./main.sh "access.log" "01-Jan-2020 02:07:19"
+[Process Start] checking last 600 second's log, if ip request 20 time for endpoint [/login] then block for 7200 second
+[Grepping log for last 600]
+[DEBUG] current_timestamp: 1577815639 ,first_line_timestamp: 1546271700, last_seconds_first_timestamp: 1577815039, last_line_timestamp: 1546303658  
+[Warning] Log is not suitable for checking
+[completed in 0 seconds]
+[Processing condition]
+[completed]
+[Process completed in 0]
+[Process Start] checking last 600 second's log, if ip request 100 time for endpoint [/*] then block for 3600 second
+[Grepping log for last 600]
+[completed in 0 seconds]
+[Processing condition]
+[completed]
+[Process completed in 0]
+[Process Start] checking last 60 second's log, if ip request 40 time for endpoint [/*] then block for 600 second
+[Grepping log for last 60]
+[DEBUG] current_timestamp: 1577815639 ,first_line_timestamp: 1546271700, last_seconds_first_timestamp: 1577815579, last_line_timestamp: 1546303658  
+[Warning] Log is not suitable for checking
+[completed in 0 seconds]
+[Processing condition]
+[completed]
+[Process completed in 1]
+[Start output BAN and UNBAN result]
+[Completed]
+All Process completed in 1 second
+```
+### Check if the time is set to just later then the log file last line about 9 mins
+
+run command
+```bash
+./main.sh "access.log" "01-Jan-2020 02:07:19"
+```
+
+result
+```bash
+$  ./main.sh "access.log" "01-Jan-2019 08:56:38"
+[Process Start] checking last 600 second's log, if ip request 20 time for endpoint [/login] then block for 7200 second
+[Grepping log for last 600]
+[DEBUG] current_timestamp: 1546304198 ,first_line_timestamp: 1546271700, last_seconds_first_timestamp: 1546303598, last_line_timestamp: 1546303658  
+[completed in 0 seconds]
+[Processing condition]
+[completed]
+[Process completed in 4]
+[Process Start] checking last 600 second's log, if ip request 100 time for endpoint [/*] then block for 3600 second
+[Grepping log for last 600]
+[completed in 0 seconds]
 [Processing condition]
 [completed]
 [Process completed in 4]
 [Process Start] checking last 60 second's log, if ip request 40 time for endpoint [/*] then block for 600 second
 [Grepping log for last 60]
-[completed]
+[DEBUG] current_timestamp: 1546304198 ,first_line_timestamp: 1546271700, last_seconds_first_timestamp: 1546304138, last_line_timestamp: 1546303658  
+[Warning] Log is not suitable for checking
+[completed in 0 seconds]
 [Processing condition]
 [completed]
-[Process completed in 6]
+[Process completed in 0]
 [Start output BAN and UNBAN result]
-[DEBUG][ADD Entry] 1546276039[01-Jan-2019 01:07:19],BAN,58.236.203.13
-[DEBUG][ADD Entry] 1546279639[01-Jan-2019 02:07:19],UNBAN,58.236.203.13
 [Completed]
-All Process completed in 31 second
+All Process completed in 8 second
 ```
-action_record.csv:
-```csv
-1546272319,BAN,58.236.203.13
-1546275979,UNBAN,58.236.203.13
-1546276039,BAN,58.236.203.13
-1546279639,UNBAN,58.236.203.13
 
+YOu can see for checking last 10 mins rules it run as usually, but for checking last 1 min it will skip as data is not enough
+
+### Check if the time is set to just later then the log file last line about 38 sec
+
+run command
+```bash
+./main.sh "access.log" "01-Jan-2019 08:47:00"
+```
+
+result
+```bash
+$  ./main.sh "access.log" "01-Jan-2019 08:47:00"
+[Process Start] checking last 600 second's log, if ip request 20 time for endpoint [/login] then block for 7200 second
+[Grepping log for last 600]
+[DEBUG] current_timestamp: 1546303620 ,first_line_timestamp: 1546271700, last_seconds_first_timestamp: 1546303020, last_line_timestamp: 1546303658  
+[completed in 0 seconds]
+[Processing condition]
+[completed]
+[Process completed in 5]
+[Process Start] checking last 600 second's log, if ip request 100 time for endpoint [/*] then block for 3600 second
+[Grepping log for last 600]
+[completed in 0 seconds]
+[Processing condition]
+[completed]
+[Process completed in 4]
+[Process Start] checking last 60 second's log, if ip request 40 time for endpoint [/*] then block for 600 second
+[Grepping log for last 60]
+[DEBUG] current_timestamp: 1546303620 ,first_line_timestamp: 1546271700, last_seconds_first_timestamp: 1546303560, last_line_timestamp: 1546303658  
+[completed in 1 seconds]
+[Processing condition]
+[completed]
+[Process completed in 4]
+[Start output BAN and UNBAN result]
+[DEBUG][ADD Entry] 1546303620[01-Jan-2019 08:47:00],BAN,58.236.203.13
+[DEBUG][ADD Entry] 1546310820[01-Jan-2019 10:47:00],UNBAN,58.236.203.13
+[Completed]
+All Process completed in 14 second
 ```
 
 ## OverAll Test
@@ -310,53 +486,7 @@ The current approach of `overall_test.sh`, start from `31-Dec-2018 23:55:00`, le
 
 so the overall test will be `very very very very very` time consuming.
 
-As the ban time is related to the script start time and each script start time is rely on last finish time (currently the processing time is between 28 sec to 33 sec), so the result is slighty different from the requirement
-
-
-result:
-action_record.csv:
-```csv
-1546271816,BAN,58.236.203.13
-1546277424,BAN,221.17.254.20
-1546281135,UNBAN,221.17.254.20
-1546285800,BAN,210.133.208.189
-1546293587,UNBAN,210.133.208.189
-1546297463,BAN,221.17.254.20
-1546301063,UNBAN,221.17.254.20
-1546310864,UNBAN,58.236.203.13
-```
-
-sample answer vs my answer for 9 hours testing:
-```
-[BAN]   1546271816 - 1546271816 = 0 sec 
-[BAN]   1546277422 - 1546277424 = -2 sec
-[UNBAN] 1546281160 - 1546281135 = 24 sec
-[BAN]   1546285801 - 1546285800 = 1 sec
-[UNBAN] 1546293587 - 1546293587 = 0 sec
-[BAN]   1546297454 - 1546297463 = -9 sec
-[UNBAN] 1546301070 - 1546301063 = 7 sec 
-[UNBAN] 1546310858 - 1546310864 = -6 sec
-```
-The different is about -9 to 24 sec, while `BAN` is more accurate the different is only -9 to 1 sec.
-
-To reduce the different, only solution is keep each cycle finsih asap, if I can complete it in every sec, it should be very accurate, but seems not possible for my current solution.
-
-I have already reduce the time from more than 60 sec -> 47-50 sec -> 28-31 sec, I will be glad if I can find some way to make it quicker.
-
-From the console, I checked the time spend:
-1. For rule 1 : any ip request `/login` `20` times in past `10 minutes` (current time -> last 600s) `ban` these ip for `2 hour`  
-15 sec for grepping log for last 10 mins in access.log, 5 sec for processing condition
-2. For rule 2: any ip request `/*` `100` times in past `10 minutes` (current time -> last 600s) `ban` these ip for `1 hour`  
-As will reuse temp log from (1) so grep log is 0 sec , and 5 sec for processing condition
-3.  For rule 3: any ip request `/*` `40` times in past `1 minutes` (current time -> last 60s) `ban` these ip for `10 minutes`  
-2 sec for grepping log , 3 sec for processing condition 
-
-So the bottle neck seems is on grepping log for last 10 mins , it need to take 15 sec
-
-
-# Latest update
-p.s. may be have bug
-use sed to grep the lines in between 2 line will much faster than using previous grep log method, it will takes only 13~15 sec for overall process which almost cut half.
+As the ban time is related to the script start time and each script start time is rely on last finish time (currently the processing time is ~between 28 sec to 33 sec~ around 15 sec), so the result is slighty different from the requirement
 
 
 result:
@@ -371,7 +501,7 @@ action_record.csv:
 1546301059,UNBAN,221.17.254.20
 1546310858,UNBAN,58.236.203.13
 ```
-sample answer vs my answer for another 9 hours testing:
+sample answer vs my answer for 9 hours testing:
 ```
 [BAN]   1546271816 - 1546271822 = -6 sec 
 [BAN]   1546277422 - 1546277424 = -2 sec
@@ -382,6 +512,25 @@ sample answer vs my answer for another 9 hours testing:
 [UNBAN] 1546301070 - 1546301059 = 11 sec 
 [UNBAN] 1546310858 - 1546310858 = 0 sec
 ```
+The different is about -9 to 24 sec, while `BAN` is more accurate the different is only -9 to 1 sec.
+
+To reduce the different, only solution is keep each cycle finsih asap, if I can complete it in every sec, it should be very accurate, but seems not possible for my current solution.
+
+I have already reduce the time from more than 60 sec -> 47-50 sec -> 28-31 sec -> 13-15 sec, I will be glad if I can find some way to make it quicker.
+
+This is reference as the last bottle-neck is on grepping method
+~From the console, I checked the time spend:~
+~1. For rule 1 : any ip request `/login` `20` times in past `10 minutes` (current time -> last 600s) `ban` these ip for `2 hour`  ~
+~15 sec for grepping log for last 10 mins in access.log, 5 sec for processing condition~
+~2. For rule 2: any ip request `/*` `100` times in past `10 minutes` (current time -> last 600s) `ban` these ip for `1 hour`  ~
+~As will reuse temp log from (1) so grep log is 0 sec , and 5 sec for processing condition~
+~3.  For rule 3: any ip request `/*` `40` times in past `1 minutes` (current time -> last 60s) `ban` these ip for `10 minutes`  ~
+~2 sec for grepping log , 3 sec for processing condition ~
+
+~So the bottle neck seems is on grepping log for last 10 mins , it need to take 15 sec~
+
+Although the running speed almost increase 50% but need to make sure grep lines between using sed the start and end pattern is exist in the file.
+So need more complex line for do checking before calling sed.
 
  
 

@@ -33,7 +33,7 @@ function check-if-need-ban() {
 
         last_seconds_first_timestamp=$((current_timestamp - last_seconds))
         touch "$tempfile_name"
-        echo "current_timestamp: $current_timestamp ,first_line_timestamp: $first_line_timestamp, last_seconds_first_timestamp: $last_seconds_first_timestamp, last_line_timestamp: $last_line_timestamp  "
+        echo "[DEBUG] current_timestamp: $current_timestamp ,first_line_timestamp: $first_line_timestamp, last_seconds_first_timestamp: $last_seconds_first_timestamp, last_line_timestamp: $last_line_timestamp  "
         if (( $current_timestamp >=  $first_line_timestamp )) && (( $last_seconds_first_timestamp <=  $last_line_timestamp )) && (( $last_seconds_first_timestamp >=  $first_line_timestamp )); then
 
             temp_current_timestamp=$current_timestamp
