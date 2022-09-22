@@ -30,10 +30,11 @@ function check-if-need-ban() {
         #done
         #grep "$search_timestring" "$file" >> $tempfile_name
         #############################
-        echo "$current_timestamp"
+        #echo "$current_timestamp"
         start_timestring=$(date -d @$((current_timestamp - $last_seconds)) +"%d/%b/%Y:%H:%M:%S")
         end_timestring=$(date -d @$current_timestamp +"%d/%b/%Y:%H:%M:%S")
-        cat "$file" | sed "s/\[//g" | awk -vstart="$start_timestring" -vend="$end_timestring" '{ if ($4>=start && $4<=end) print $0}' >> $tempfile_name
+        #cat "$file" | sed "s/\[//g" | awk -vstart="[$start_timestring" -vend="[$end_timestring" '{ if ($4>=start && $4<=end) print $0}' >> $tempfile_name
+        awk -vstart="[$start_timestring" -vend="[$end_timestring" '{ if ($4>=start && $4<=end) print $0}' "$file" >> $tempfile_name
 
 
         # last_seconds_first_timestamp=$((current_timestamp - last_seconds))
@@ -136,12 +137,11 @@ output_file="action_record.csv"
 real_current_timestring=$(date +"%d-%b-%Y %H:%M:%S")
 current_timestring=${2-"$real_current_timestring"}
 ########################
-echo "$current_timestring"
+#echo "$current_timestring"
 current_timestamp=$(date -d  "$current_timestring" +"%s")
 data_ip=()
 data_bantime=()
 
-exit
 first_line_timestring=$(head -n 1 "$file" | cut -d ' ' -f 4 )
 first_line_timestring=$(echo "$first_line_timestring" | sed 's/\[//g' )
 first_line_timestring_date=$(echo "$first_line_timestring" | sed 's/\//-/g' )
